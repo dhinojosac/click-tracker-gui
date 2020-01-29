@@ -1,6 +1,6 @@
 from tkinter import *
 from time import sleep, time
-from keyboard import is_pressed
+#from keyboard import is_pressed
 from pynput.keyboard import Listener
 from pynput import mouse
 import math
@@ -82,8 +82,8 @@ while True:
     if rectangle_iter>rectangle_max_iter:
         isRunning = False
 
-    if is_pressed('ctrl+space'):
-        isRunning = False
+    #if is_pressed('ctrl+space'):
+    #    isRunning = False
     
     sleep(0.1)
 
