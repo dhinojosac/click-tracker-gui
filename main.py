@@ -47,16 +47,17 @@ mouse_listener = mouse.Listener(on_click=on_click)     #sets mouse listener pass
 mouse_listener.start()                                 #starts mouse listener
 
 window = Tk()   #init Tkinter window
-
+window.title("Click Tracker v0.1")
 ws = window.winfo_screenwidth() #gets the width of screen
 hs = window.winfo_screenheight() #gets the heigth of screen
-w_ws = ws
-w_hs = hs 
+
+w_ws = ws+10
+w_hs = hs-20
 #w_ws = math.ceil(ws/2) #reduce width ,scale
 #w_hs = math.ceil(hs/2) #reduce height, scale
 window.wm_attributes('-topmost','true')
 window.configure(background='black')
-window.geometry("{}x{}+{}+{}".format(w_ws,w_hs,0,0)) #sets size of windows
+window.geometry("{}x{}+{}+{}".format(w_ws,w_hs,-10,-5)) #sets size of windows
 
 # Function to create rectangles on screen, receive canvas as input
 def createRectangle(c):
