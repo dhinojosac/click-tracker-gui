@@ -56,6 +56,7 @@ w_hs = hs-20
 #w_ws = math.ceil(ws/2) #reduce width ,scale
 #w_hs = math.ceil(hs/2) #reduce height, scale
 window.wm_attributes('-topmost','true')
+window.attributes("-fullscreen", True)
 window.configure(background='black')
 window.geometry("{}x{}+{}+{}".format(w_ws,w_hs,-10,-5)) #sets size of windows
 
