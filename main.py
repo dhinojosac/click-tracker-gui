@@ -6,7 +6,7 @@ from pynput import mouse
 import math
 import random
 
-STEP =  4                 # SELECT THE STEP
+STEP =  4                 # SELECT THE STEP 1 to 4
 
 #default configuration
 square_max_iter     = 3   # max number of iterations
