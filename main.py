@@ -6,72 +6,141 @@ from pynput import mouse
 import math
 import random
 
-rectangle_max_iter  = 5   # max number of iterations
+STEP =  4                 # SELECT THE STEP
+
+#default configuration
+square_max_iter     = 5   # max number of iterations
 max_timer_click     = 2   # max timer to click image
-rectangle_width     = 200 # rectangle width
+square_size         = 100 # square width
 click_error         = 0   # click error
+random_pos          = False # random position
+square_color        = [0,0,255]
+random_color        = False
+
+# STEP 1: RED square 500x500 pixels in the center of screen
+if STEP== 1:
+    square_max_iter     = 1   # max number of iterations
+    max_timer_click     = 5   # max timer to click image
+    square_size         = 500 # square width
+    click_error         = 0   # click error
+    random_pos          = False #random position
+    random_color        = False # square random color picked from color_options
+    square_color        = [255,0,0] #RGB color if random color is False
+    colors_options      = [[255,0,0],[255,255,0],[0,0,255]] #option of colors, only work if random_color is True
+
+# STEP 2: Random color square 500x500 pixels in the center of screen
+if STEP== 2:
+    square_max_iter     = 1   # max number of iterations
+    max_timer_click     = 5   # max timer to click image
+    square_size         = 500 # square width
+    click_error         = 0   # click error
+    random_pos          = False #random position
+    random_color        = True # square random color picked from color_options
+    square_color        = [255,0,0] #RGB color if random color is False
+    colors_options      = [[255,0,0],[255,255,0],[0,0,255]] #option of colors, only work if random_color is True
+
+# STEP 3: Random color square 200x200 pixels in the center of screen
+if STEP== 3:
+    square_max_iter     = 1   # max number of iterations
+    max_timer_click     = 5   # max timer to click image
+    square_size         = 200 # square width pixels
+    click_error         = 0   # click error
+    random_pos          = False #random position
+    random_color        = True # square random color picked from color_options
+    square_color        = [255,0,0] #RGB color if random color is False
+    colors_options      = [[255,0,0],[255,255,0],[0,0,255]] #option of colors, only work if random_color is True
+
+# STEP 4: Random color square 200x200 pixels in the random position of screen
+if STEP== 4:
+    square_max_iter     = 3   # max number of iterations
+    max_timer_click     = 5   # max timer to click image
+    square_size         = 200 # square width
+    click_error         = 0   # click error
+    random_pos          = True #random position    
+    random_color        = True # square random color picked from color_options
+    square_color        = [255,0,0] #RGB color if random color is False
+    colors_options      = [[255,0,0],[255,255,0],[0,0,255]] #option of colors, only work if random_color is True
+
+
 
 score = 0   # score used to return right clicks
 
 # variables to control program
-rectangle_show = False  #indicates if the rectangle is on screen
-rectangle_timer = 0     #used to control time
-rectangle_iter = 0      #used to count program iterations
-random_pos_x = None     #stores x rectangle's position
-random_pos_y = None     #stores y rectangle's coordenate
+square_show = False  #indicates if the square is on screen
+square_timer = 0     #used to control time
+square_iter = 0      #used to count program iterations
+square_pos_x = None     #stores x square's position
+square_pos_y = None     #stores y square's coordenate
 clicked = False         #indicates if left click is pressed
 isRunning = True        #indicates if program is running
 
 
-canvas = None      #used to support rectangle un tkinter
+canvas = None      #used to support square un tkinter
   
 
 #Function that is executed every time the mouse is clicked
 #and get the position x,y of the cursor.
 def on_click(x, y, button, pressed):
-    global rectangle_show, clicked, score, random_pos_x, random_pos_y, rectangle_width
+    global square_show, clicked, score, square_pos_x, square_pos_y, square_size
 
-    print("margins x:{}-{}  y:{}-{}".format(random_pos_x, random_pos_x+rectangle_width, random_pos_y, random_pos_y+rectangle_width)) #debug
+    #print("margins x:{}-{}  y:{}-{}".format(square_pos_x, square_pos_x+square_size, square_pos_y, square_pos_y+square_size)) #debug
 
-    if button == mouse.Button.left and pressed==True: #check if left button is clicked, pressed=Trye indicates pressed, False indicates release
-        print("Left click: {},{}".format(x,y)) #debug: show cursor position on console
-        if x>= random_pos_x-click_error and x<= random_pos_x+rectangle_width+click_error and y>= random_pos_y-click_error and y<= random_pos_y+rectangle_width+click_error : #check if click is inside rectangle+error area.
-            print("CLICKED OK")
-            score=score+1 #add 1 to score if is a right click, inside a rectangle+error area.
+    if button == mouse.Button.left and pressed==True:       #check if left button is clicked, pressed=Trye indicates pressed, False indicates release
+        print("Click position: {},{}".format(x,y))              #debug: show cursor position on console
+        if x>= square_pos_x-click_error and x<= square_pos_x+square_size+click_error and y>= square_pos_y-click_error and y<= square_pos_y+square_size+click_error : #check if click is inside square+error area.
+            score=score+1                                   #add 1 to score if is a right click, inside a square+error area.
+            print(">> CLICK INSIDE TARGET!")
+        else:
+            print(">> CLICK FAILED!")
         clicked = True
 
     if button == mouse.Button.right and pressed ==True: #check if right click is pressed
         print("Right click: {},{}".format(x,y))
 
+
 mouse_listener = mouse.Listener(on_click=on_click)     #sets mouse listener passing function prior defined
 mouse_listener.start()                                 #starts mouse listener
 
+
+'''
+CREATE GUI
+'''
+
 window = Tk()   #init Tkinter window
 window.title("Click Tracker v0.1")
+
 ws = window.winfo_screenwidth() #gets the width of screen
 hs = window.winfo_screenheight() #gets the heigth of screen
-
-w_ws = ws+10
-w_hs = hs-20
+print("[!] SCREEN SIZE {}x{}".format(ws,hs))
+w_ws = ws
+w_hs = hs
 #w_ws = math.ceil(ws/2) #reduce width ,scale
 #w_hs = math.ceil(hs/2) #reduce height, scale
-window.wm_attributes('-topmost','true')
 window.attributes("-fullscreen", True)
 window.configure(background='black')
 window.geometry("{}x{}+{}+{}".format(w_ws,w_hs,-10,-5)) #sets size of windows
 
-# Function to create rectangles on screen, receive canvas as input
-def createRectangle(c):
-    global rectangle_show, rectangle_timer, rectangle_iter, isRunning, rectangle_max_iter
-    global random_pos_x, random_pos_y
-
-    if rectangle_show == False: # checks if rectangle is on screen, if not, create it
-        random_pos_x = random.randint(0+rectangle_width,w_ws-rectangle_width) #random x position on screen
-        random_pos_y = random.randint(0+rectangle_width,w_hs-rectangle_width) #random y position on screen
-        c.create_rectangle(random_pos_x, random_pos_y, random_pos_x+rectangle_width, random_pos_y+rectangle_width, fill="blue") #create blue reactangle
-        rectangle_show = True   # set true to indicates that rectangle is on screen
-        rectangle_iter = rectangle_iter + 1 # add 1 to program iteration
-        rectangle_timer = time()    # restart timer
+# Function to create squares on screen, receive canvas as input
+def createSquare(c):
+    global square_show, square_timer, square_iter, isRunning, square_max_iter
+    global square_pos_x, square_pos_y, random_pos, random_color
+    
+    if square_show == False: # checks if square is on screen, if not, create it
+        if random_pos:
+            square_pos_x = random.randint(0+square_size,w_ws-square_size) #random x position on screen
+            square_pos_y = random.randint(0+square_size,w_hs-square_size) #random y position on screen
+        else:
+            square_pos_x = (w_ws-square_size)/2
+            square_pos_y = (w_hs-square_size)/2
+        if random_color:
+            rcol = random.choice(colors_options)
+        else:    
+            rcol =  square_color
+        colorval = "#%02x%02x%02x" % (rcol[0], rcol[1], rcol[2]) # rgb to hexadecimal format
+        c.create_rectangle(square_pos_x, square_pos_y, square_pos_x+square_size, square_pos_y+square_size, fill=colorval) #create blue square
+        square_show = True   # set true to indicates that square is on screen
+        square_iter = square_iter + 1 # add 1 to program iteration
+        square_timer = time()    # restart timer
 
 
 canvas = Canvas(window, width=w_ws, height=w_hs) #create canvas with screen size
@@ -80,30 +149,36 @@ canvas.pack()      #add canvas to window screen
 
 #loop of program
 while True:    
+    if square_iter>square_max_iter:   #checks if program reach max iterations
+        break
 
-    if rectangle_show == False: #checks if rectangle is on screen, if not, create one
-        createRectangle(canvas) #create rectangle
-        print("R: {},{}".format(random_pos_x,random_pos_y))
-    if time()- rectangle_timer > max_timer_click or clicked: # checks time of rectangle on screen or left button of mouse was clicked
+    if square_show == False: #checks if square is on screen, if not, create one
+        if square_iter >= square_max_iter:
+            break
+        print("--------------------------------------\n[+] Square {} created!".format(square_iter))
+        createSquare(canvas) #create square
+        print("Square position: {},{}".format(square_pos_x,square_pos_y))
+
+    if time()- square_timer > max_timer_click or clicked: # checks time of square on screen or left button of mouse was clicked
         canvas.delete("all")    #delete all objects in canvas
-        rectangle_show = False  #set false to create a new rectangle
+        square_show = False  #set false to create a new square
         clicked = False         #set false to init click state
-        rectangle_timer = time()    #restart timer
+        square_timer = time()    #restart timer
+    
 
-    if rectangle_iter>rectangle_max_iter:   #checks if program reach max iterations
-        isRunning = False   #end program
-
-    #if is_pressed('ctrl+space'):
-    #    isRunning = False
+    
+    
+    if isRunning == False:  #end program
+        break
     
     sleep(0.1)
 
-    if isRunning == False:  #end program
-        break
+    
 
     window.update() #function mandatory to update tkinter gui
 
 mouse_listener.stop()   #stop listener when program was ended
 window.destroy()        #destroy windows of tkinter
 
-print("YOUR SCORE IS {} OF {}".format(score, rectangle_max_iter))
+print("--------------------------------------\n[!] YOUR SCORE IS {} OF {}".format(score, square_max_iter))
+print("--------------------------------------\n")
