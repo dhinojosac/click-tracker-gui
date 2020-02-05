@@ -6,10 +6,17 @@ Apareceran cuadrados de forma random en la pantalla. Al darle click el puntaje a
 
 ### Configuraciones en código
 ```
-rectangle_max_iter  = 5   # Iteraciones, cuantos cuadrados aparecen 
-max_timer_click     = 2   # Tiempo para presionar un cuadrado en segundos
-rectangle_width     = 200 # Ancho del cuadrado
-click_error         = 0   # Error del click
+STEP =  4                 # Seleccionar 1 de las 4 etapas enviadas en el ppt
+
+#default configuration
+square_max_iter     = 3   # número de veces que aparecerá un cuadrado
+max_timer_click     = 5   # tiempo en segundos para presionarlo
+square_size         = 200 # tamaño en pixeles de cuadrado
+click_error         = 0   # error permitido de click 
+random_pos          = True # seleccionar una posición random de aparición de los cuadrados o aparecerá en el centro
+random_color        = True # escoger un color random desde color_options o de lo contrario se selecciona el color en square_color
+square_color        = [255,0,0] # color RGB cuando random_color es False
+colors_options      = [[255,0,0],[255,255,0],[0,0,255]] # opciones de color para escoger de forma random cuando random_color es True
 ```
 El error es similar a generar un cuadrado de mayor area imaginario. Quiere decir si el cuadrado normal es de 200x200 al tener un error de 100 permite que el click sea válido presionando en un cuadrado de 300x300.
 

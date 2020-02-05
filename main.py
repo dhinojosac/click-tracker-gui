@@ -9,13 +9,14 @@ import random
 STEP =  4                 # SELECT THE STEP
 
 #default configuration
-square_max_iter     = 5   # max number of iterations
-max_timer_click     = 2   # max timer to click image
-square_size         = 100 # square width
+square_max_iter     = 3   # max number of iterations
+max_timer_click     = 5   # max timer to click image
+square_size         = 200 # square width
 click_error         = 0   # click error
-random_pos          = False # random position
-square_color        = [0,0,255]
-random_color        = False
+random_pos          = True #random position    
+random_color        = True # square random color picked from color_options
+square_color        = [255,0,0] #RGB color if random color is False
+colors_options      = [[255,0,0],[255,255,0],[0,0,255]] #option of colors, only work if random_color is True
 
 # STEP 1: RED square 500x500 pixels in the center of screen
 if STEP== 1:
