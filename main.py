@@ -5,8 +5,10 @@ from pynput.keyboard import Listener
 from pynput import mouse
 import math
 import random
+import RPi.GPIO as GPIO
 
 STEP =  4                 # SELECT THE STEP 1 to 4
+TIME_LED_ON = 0.2         # Time led on 
 
 #default configuration
 square_max_iter     = 3   # max number of iterations
@@ -77,7 +79,34 @@ isRunning = True        #indicates if program is running
 
 
 canvas = None      #used to support square un tkinter
-  
+
+#Configure GPIO control  
+SUCCESS_LED = 17
+FAIL_LED =27
+
+#Function that indicates if the box was pressed or not. The time of the led on
+# is added to the time between the appearence of squares.
+def turn_on_led(status):
+    GPIO.setmode(GPIO.BCM) #set mode to GPIO control
+    GPIO.setup(SUCCESS_LED, GPIO.OUT) # set GPIO 17 as output SUCCESS LED
+    GPIO.setup(FAIL_LED, GPIO.OUT) # set GPIO 27 as output FAIL LED
+
+    if status == "SUCCESS":
+        GPIO.output(SUCCESS_LED, True) ## turn on SUCCESS LED
+        sleep(TIME_LED_ON)
+        GPIO.output(SUCCESS_LED, False) ## turn off SUCCESS LED
+
+    elif status == "FAIL":
+        GPIO.output(FAIL_LED, True) ## Enciendo FAIL LED
+        sleep(TIME_LED_ON)
+        GPIO.output(FAIL_LED, False) ## turn off FAIL LED
+    GPIO.cleanup() # clear GPIOs
+
+def led_success():
+    turn_on_led("SUCCESS")
+
+def led_failed():
+    turn_on_led("FAIL")
 
 #Function that is executed every time the mouse is clicked
 #and get the position x,y of the cursor.
@@ -91,8 +120,10 @@ def on_click(x, y, button, pressed):
         if x>= square_pos_x-click_error and x<= square_pos_x+square_size+click_error and y>= square_pos_y-click_error and y<= square_pos_y+square_size+click_error : #check if click is inside square+error area.
             score=score+1                                   #add 1 to score if is a right click, inside a square+error area.
             print(">> CLICK INSIDE TARGET!")
+            led_success()
         else:
             print(">> CLICK FAILED!")
+            led_failed()
         clicked = True
 
     if button == mouse.Button.right and pressed ==True: #check if right click is pressed
@@ -106,7 +137,6 @@ mouse_listener.start()                                 #starts mouse listener
 '''
 CREATE GUI
 '''
-
 window = Tk()   #init Tkinter window
 window.title("Click Tracker v0.1")
 
