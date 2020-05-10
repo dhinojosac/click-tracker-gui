@@ -5,7 +5,12 @@ from pynput.keyboard import Listener
 from pynput import mouse
 import math
 import random
-import RPi.GPIO as GPIO
+
+IS_PC = True    # debug in pc
+if not IS_PC:
+    import RPi.GPIO as GPIO
+
+
 
 STEP =  4                 # SELECT THE STEP 1 to 4
 TIME_LED_ON = 0.2         # Time led on 
@@ -87,20 +92,21 @@ FAIL_LED =27
 #Function that indicates if the box was pressed or not. The time of the led on
 # is added to the time between the appearence of squares.
 def turn_on_led(status):
-    GPIO.setmode(GPIO.BCM) #set mode to GPIO control
-    GPIO.setup(SUCCESS_LED, GPIO.OUT) # set GPIO 17 as output SUCCESS LED
-    GPIO.setup(FAIL_LED, GPIO.OUT) # set GPIO 27 as output FAIL LED
+    if not IS_PC:
+        GPIO.setmode(GPIO.BCM) #set mode to GPIO control
+        GPIO.setup(SUCCESS_LED, GPIO.OUT) # set GPIO 17 as output SUCCESS LED
+        GPIO.setup(FAIL_LED, GPIO.OUT) # set GPIO 27 as output FAIL LED
 
-    if status == "SUCCESS":
-        GPIO.output(SUCCESS_LED, True) ## turn on SUCCESS LED
-        sleep(TIME_LED_ON)
-        GPIO.output(SUCCESS_LED, False) ## turn off SUCCESS LED
+        if status == "SUCCESS":
+            GPIO.output(SUCCESS_LED, True) ## turn on SUCCESS LED
+            sleep(TIME_LED_ON)
+            GPIO.output(SUCCESS_LED, False) ## turn off SUCCESS LED
 
-    elif status == "FAIL":
-        GPIO.output(FAIL_LED, True) ## Enciendo FAIL LED
-        sleep(TIME_LED_ON)
-        GPIO.output(FAIL_LED, False) ## turn off FAIL LED
-    GPIO.cleanup() # clear GPIOs
+        elif status == "FAIL":
+            GPIO.output(FAIL_LED, True) ## Enciendo FAIL LED
+            sleep(TIME_LED_ON)
+            GPIO.output(FAIL_LED, False) ## turn off FAIL LED
+        GPIO.cleanup() # clear GPIOs
 
 def led_success():
     turn_on_led("SUCCESS")
@@ -130,15 +136,14 @@ def on_click(x, y, button, pressed):
         print("Right click: {},{}".format(x,y))
 
 
-mouse_listener = mouse.Listener(on_click=on_click)     #sets mouse listener passing function prior defined
-mouse_listener.start()                                 #starts mouse listener
-
-
 '''
 CREATE GUI
 '''
 window = Tk()   #init Tkinter window
 window.title("Click Tracker v0.1")
+
+mouse_listener = mouse.Listener(on_click=on_click)     #sets mouse listener passing function prior defined
+mouse_listener.start()                                 #starts mouse listener
 
 ws = window.winfo_screenwidth() #gets the width of screen
 hs = window.winfo_screenheight() #gets the heigth of screen
